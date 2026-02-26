@@ -11,8 +11,12 @@ from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
+from reportlab.lib.utils import ImageReader
+from .models import Cliente
+from django.contrib.admin.views.decorators import staff_member_required
 
 
+@staff_member_required
 def cadastrar_cliente(request):
     contexto = {}
     
@@ -38,7 +42,6 @@ def cadastrar_cliente(request):
             
             contexto['qr_code'] = f"data:image/png;base64,{img_base64}"
             contexto['cliente'] = cliente
-            contexto['placa_veiculo'] = cliente.placa_veiculo
             contexto['form'] = ClienteForm() # Reseta o form para um novo cadastro
             
             return render(request, 'cadastro/cadastrar_cliente.html', contexto)
@@ -73,7 +76,7 @@ def validar_acesso(request, codigo_acesso):
         }
     return render(request, 'cadastro/validar_acesso.html', contexto)
 
-
+@staff_member_required
 def gerar_pdf_qrcode(request, codigo_acesso):
     cliente = get_object_or_404(Cliente, codigo_acesso=codigo_acesso)
     
@@ -94,7 +97,7 @@ def gerar_pdf_qrcode(request, codigo_acesso):
     
     # Criar o PDF
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="qrcode_{cliente.placa_veiculo}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="qrcode_{cliente.nome} - {cliente.cpf}.pdf"'
     
     buffer = io.BytesIO()
     p = canvas.Canvas(buffer, pagesize=A4)
@@ -105,9 +108,7 @@ def gerar_pdf_qrcode(request, codigo_acesso):
     p.drawCentredString(largura/2, altura - 3*cm, "Cartão de Acesso - SISAuto")
     
     p.setFont("Helvetica", 12)
-    p.drawCentredString(largura/2, altura - 4*cm, f"Cliente: {cliente.nome} - Setor: {cliente.setor}")
-    p.drawCentredString(largura/2, altura - 4.5*cm, f"Veículo: {cliente.modelo_veiculo} - Placa: {cliente.placa_veiculo}")
-    
+    p.drawCentredString(largura/2, altura - 4*cm, f"Cliente: {cliente.nome} - CPF: {cliente.cpf} - Setor: {cliente.setor} ")
     # Inserir o QR Code
     from reportlab.lib.utils import ImageReader
     qr_img = ImageReader(img_buffer)
@@ -124,4 +125,58 @@ def gerar_pdf_qrcode(request, codigo_acesso):
     response.write(pdf)
     
     return response
+@staff_member_required
+def gerar_pdf_qrcode(request, codigo_acesso):
 
+    cliente = get_object_or_404(Cliente, codigo_acesso=codigo_acesso)
+    
+
+    url_caminho = reverse('validar_acesso', args=[cliente.codigo_acesso])
+    url_completa = request.build_absolute_uri(url_caminho)
+    
+
+    qr = qrcode.QRCode(version=1, box_size=10, border=1)
+    qr.add_data(url_completa)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    buffer_img = io.BytesIO()
+    img.save(buffer_img, format="PNG")
+    buffer_img.seek(0)
+    
+
+    buffer_pdf = io.BytesIO()
+    p = canvas.Canvas(buffer_pdf, pagesize=A4)
+    width, height = A4  
+    
+
+    tamanho_qr = 10 * cm
+    posicao_x_qr = (width - tamanho_qr) / 2
+    posicao_y_qr = height - 12 * cm 
+    
+    
+    p.setFont("Helvetica-Bold", 16)
+    p.drawCentredString(width / 2, posicao_y_qr - 1 * cm, "Cartão de Acesso - SISAuto")
+    
+
+    p.setFont("Helvetica", 12)
+    texto_cliente = f"Cliente: {cliente.nome} - CPF: {cliente.cpf} Setor: {cliente.setor}"
+    p.drawCentredString(width / 2, posicao_y_qr - 2 * cm, texto_cliente)
+    
+
+    p.setFont("Helvetica-Oblique", 11)
+    p.drawCentredString(width / 2, posicao_y_qr - 3 * cm, "Apresente este QR Code na entrada do estacionamento.")
+    
+    p.drawImage(ImageReader(buffer_img), posicao_x_qr, posicao_y_qr, width=tamanho_qr, height=tamanho_qr)
+    
+ 
+ 
+    p.showPage()
+    p.save()
+    
+    buffer_pdf.seek(0)
+    
+    response = HttpResponse(buffer_pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="Cartao_Acesso_{cliente.nome}.pdf"'
+    
+    return response
