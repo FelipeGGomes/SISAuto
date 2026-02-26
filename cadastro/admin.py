@@ -2,10 +2,10 @@ from django.contrib import admin
 from .models import Cliente, RegistroAcesso
 
 class ClienteAdmin(admin.ModelAdmin):
-    list_display = ('nome','telefone', 'data_cadastro','placa_veiculo', 'ativo')
-    list_filter = ('nome', 'telefone', 'data_cadastro','placa_veiculo', 'ativo')
-    search_fields = ('nome', 'telefone', 'data_cadastro','placa_veiculo', 'ativo' )
-    ordering = ('nome', 'telefone', 'data_cadastro','placa_veiculo', 'ativo')
+    list_display = ('nome','telefone', 'data_cadastro', 'ativo')
+    list_filter = ('nome', 'telefone', 'data_cadastro','setor', 'ativo')
+    search_fields = ('nome', 'telefone', 'data_cadastro','setor', 'ativo' )
+    ordering = ('nome', 'telefone', 'data_cadastro','setor', 'ativo')
 
 admin.site.register(Cliente, ClienteAdmin)
 

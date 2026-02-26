@@ -38,8 +38,6 @@ class Cliente(models.Model):
     telefone = models.CharField(max_length=15)
     cpf = models.CharField(max_length=15)
     setor = models.CharField(max_length=15, choices=SETOR_CHOICES, default='Selecione')
-    placa_veiculo = models.CharField(max_length=15, unique=True)
-    modelo_veiculo = models.CharField(max_length=15)
     
     ativo = models.BooleanField(default=True)
     data_cadastro = models.DateTimeField(auto_now_add=True)
@@ -49,7 +47,7 @@ class Cliente(models.Model):
     
     
     def __str__(self):
-        return F"{self.nome} - {self.placa_veiculo}"
+        return F"{self.nome} - {self.cpf} - {self.setor}"
 
 
 
