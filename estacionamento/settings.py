@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'baton',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cadastro',
+    
+    'baton.autodiscover',
 ]
 
 MIDDLEWARE = [
@@ -121,3 +124,25 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEBUG = 'RENDER' not in os.environ
+
+
+
+BATON = {
+    'SITE_HEADER': 'SISAuto SUDEMA',
+    'SITE_TITLE': 'Controle Veicular',
+    'INDEX_TITLE': 'Painel de Administração',
+    'SUPPORT_HREF': '#',
+    'COPYRIGHT': 'copyright © 2026 SUDEMA', 
+    'POWERED_BY': 'SISAuto',
+    'CONFIRM_UNSAVED_CHANGES': True,
+    'SHOW_MULTIPART_UPLOADING': True,
+    'ENABLE_IMAGES_PREVIEW': True,
+    'CHANGELIST_FILTERS_IN_MODAL': True,
+    'CHANGELIST_FILTERS_ALWAYS_OPEN': False,
+    'CHANGELIST_FILTERS_FORM': True,
+    'MENU_ALWAYS_COLLAPSED': False,
+    'MENU_TITLE': 'Menu Principal',
+    # Aqui você pode mudar a cor principal do painel (ex: um verde institucional)
+    # Se quiser testar o verde, remova o '#' da linha abaixo:
+    # 'SEARCH_FIELD_DEFAULT_THEME': 'success', 
+}

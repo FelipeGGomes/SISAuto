@@ -36,7 +36,7 @@ class Cliente(models.Model):
 
     nome = models.CharField(max_length=100)
     telefone = models.CharField(max_length=15)
-    cpf = models.CharField(max_length=15)
+    cpf = models.CharField(max_length=15 , unique=True)
     setor = models.CharField(max_length=15, choices=SETOR_CHOICES, default='Selecione')
     
     ativo = models.BooleanField(default=True)

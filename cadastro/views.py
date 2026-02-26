@@ -38,7 +38,6 @@ def cadastrar_cliente(request):
             
             contexto['qr_code'] = f"data:image/png;base64,{img_base64}"
             contexto['cliente'] = cliente
-            contexto['placa_veiculo'] = cliente.placa_veiculo
             contexto['form'] = ClienteForm() # Reseta o form para um novo cadastro
             
             return render(request, 'cadastro/cadastrar_cliente.html', contexto)
@@ -94,7 +93,7 @@ def gerar_pdf_qrcode(request, codigo_acesso):
     
     # Criar o PDF
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="qrcode_{cliente.placa_veiculo}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="qrcode_{cliente.nome} - {cliente.cpf}.pdf"'
     
     buffer = io.BytesIO()
     p = canvas.Canvas(buffer, pagesize=A4)
@@ -105,9 +104,7 @@ def gerar_pdf_qrcode(request, codigo_acesso):
     p.drawCentredString(largura/2, altura - 3*cm, "Cartão de Acesso - SISAuto")
     
     p.setFont("Helvetica", 12)
-    p.drawCentredString(largura/2, altura - 4*cm, f"Cliente: {cliente.nome} - Setor: {cliente.setor}")
-    p.drawCentredString(largura/2, altura - 4.5*cm, f"Veículo: {cliente.modelo_veiculo} - Placa: {cliente.placa_veiculo}")
-    
+    p.drawCentredString(largura/2, altura - 4*cm, f"Cliente: {cliente.nome} - CPF: {cliente.cpf} - Setor: {cliente.setor} ")
     # Inserir o QR Code
     from reportlab.lib.utils import ImageReader
     qr_img = ImageReader(img_buffer)
