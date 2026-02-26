@@ -252,16 +252,9 @@
 
                 <div class="cliente-detail">
                     <i
-                        class="bi bi-upc-scan {% if cor == 'success' %}text-state-success{% else %}text-state-danger{% endif %}"></i>
-                    <strong>Placa:</strong>
-                    <span>{{ cliente.placa_veiculo }}</span>
-                </div>
-
-                <div class="cliente-detail">
-                    <i
-                        class="bi bi-truck {% if cor == 'success' %}text-state-success{% else %}text-state-danger{% endif %}"></i>
-                    <strong>Modelo:</strong>
-                    <span>{{ cliente.modelo_veiculo }}</span>
+                        class="bi bi-person-workspace {% if cor == 'success' %}text-state-success{% else %}text-state-danger{% endif %}"></i>
+                    <strong>CPF:</strong>
+                    <span>{{ cliente.cpf }}</span>
                 </div>
 
                 <!-- Pequeno detalhe extra: se existir cor ou ano no futuro, mas mantemos só o que o backend manda -->

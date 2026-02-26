@@ -72,7 +72,7 @@ def validar_acesso(request, codigo_acesso):
             'status': 'Entrada NEGADA',
             'cor': 'danger',
             'cliente': cliente,
-            'Mensagem': 'Cliente inativo - Favor procurar a CSG'
+            'Mensagem': 'Usuário Desativado - Favor procurar a CSG'
         }
     return render(request, 'cadastro/validar_acesso.html', contexto)
 
