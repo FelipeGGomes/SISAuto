@@ -11,6 +11,7 @@ class Cliente(models.Model):
         ('CCA', 'CCA'),
         ('CCF', 'CCF'),
         ('CEA', 'CEA'),
+        ('CMA', 'CMA'),
         ('COMEG', 'COMEG'),
         ('COPAM', 'COPAM'),
         ('CPD', 'CPD'),
